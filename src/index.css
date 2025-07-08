@@ -1,0 +1,8 @@
+button {
+    cursor: "pointer",
+}
+
+.telegram-webapp {
+    max-width: 600px;
+    margin: 0 auto;
+}
