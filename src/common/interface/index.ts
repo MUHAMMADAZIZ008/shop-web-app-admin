@@ -39,3 +39,10 @@ export interface TelegramWebApp {
   expand: () => void;
   close: () => void;
 }
+
+export interface LayoutType {
+  icon: any;
+  label: string;
+  path?: string;
+  index?: boolean;
+}
