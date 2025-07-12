@@ -6,101 +6,117 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useTelegram } from "../hooks/use-telegram";
 import React from "react";
+import { useTelegram } from "../hooks/use-telegram";
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
 
-
-interface LayoutType {
+interface LayoutItem {
   key: string;
   icon: React.ReactNode;
   path: string;
+  label: string;
 }
 
-const layoutItems: LayoutType[] = [
-  { key: "/", icon: <HomeOutlined className="w-7 block" />, path: "/" },
+const layoutItems: LayoutItem[] = [
+  {
+    key: "/",
+    icon: <HomeOutlined className="block" />,
+    path: "/",
+    label: "Bosh sahifa",
+  },
   {
     key: "/products",
-    icon: <ShoppingCartOutlined className="w-7 block" />,
+    icon: <ShoppingCartOutlined className="block" />,
     path: "/products",
+    label: "Mahsulotlar",
   },
   {
     key: "/categories",
-    icon: <AppstoreOutlined className="w-7 block" />,
+    icon: <AppstoreOutlined className="block" />,
     path: "/categories",
+    label: "Kategoriyalar",
   },
   {
     key: "/profile",
-    icon: <UserOutlined className="w-7 block" />,
+    icon: <UserOutlined className="block" />,
     path: "/profile",
+    label: "Profil",
   },
 ];
 
 const MainLayout = () => {
-  const { isDarkMode, themeParams } = useTelegram();
+  const { isDarkMode = false, themeParams = { bg_color: "#ffffff" } } =
+    useTelegram();
   const location = useLocation();
   const navigate = useNavigate();
 
   const selectedKey = location.pathname;
   const bgColor = themeParams.bg_color || (isDarkMode ? "#1c2526" : "#ffffff");
+  const borderColor = isDarkMode ? "#333" : "#ddd";
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", background: bgColor }}>
-      <Layout>
-        <Content
+    <Layout style={{ background: bgColor, minHeight: "100vh" }}>
+      <Content
+        style={{
+          padding: "16px",
+          background: bgColor,
+          minHeight: "calc(100vh - 64px)",
+          maxWidth: "500px",
+          margin: "0 auto",
+        }}
+      >
+        <div>
+          <Outlet />
+        </div>
+      </Content>
+      <Footer
+        style={{
+          position: "fixed",
+          bottom: "0",
+          maxWidth: "500px",
+          width: "100%",
+          margin: "0 auto",
+          padding: "0",
+          background: bgColor,
+          boxShadow: "0 -2px 5px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Menu
+          mode="horizontal"
+          selectedKeys={[selectedKey]}
+          onClick={handleMenuClick}
+          items={layoutItems.map((item) => ({
+            key: item.key,
+            icon: (
+              <div
+                className="flex flex-col items-center"
+                aria-label={item.label}
+              >
+                {item.icon}
+                {/* <span style={{ fontSize: "0.8rem", color: isDarkMode ? "#fff" : "#000" }}>
+                  {item.label}
+                </span> */}
+              </div>
+            ),
+            label: item.label, // Remove hidden label since it's now part of the icon
+          }))}
           style={{
-            padding: "16px",
-            paddingBottom: "60px",
-            background: bgColor,
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: "14px",
+            cursor: 'pointer',
+            borderTop: `1px solid ${borderColor}`,
+            padding: "10px 0",
+            background: "transparent",
           }}
-        >
-          <Text strong>
-            Rejim: {isDarkMode ? "Qorong'u rejim" : "Yorug' rejim"}
-          </Text>
-          <div style={{ marginTop: 16 }}>
-            <Outlet />
-          </div>
-        </Content>
-
-        <Footer
-          style={{
-            position: "fixed",
-            bottom: 0,
-            width: "100%",
-            padding: 0,
-            background: bgColor,
-            boxShadow: "0 -2px 5px rgba(0,0,0,0.1)",
-          }}
-        >
-          <Menu
-            mode="horizontal"
-            selectedKeys={[selectedKey]}
-            onClick={handleMenuClick}
-            items={layoutItems.map((item) => ({
-              key: item.key,
-              icon: (
-                <div className="flex items-center justify-center">
-                  {item.icon}
-                </div>
-              ),
-            }))}
-            style={{
-              display: "flex",
-              justifyContent: "space-evenly",
-              fontSize: 22,
-              borderTop: "1px solid #ddd",
-              padding: "10px 0",
-              background: "transparent",
-            }}
-          />
-        </Footer>
-      </Layout>
+        />
+      </Footer>
     </Layout>
   );
 };

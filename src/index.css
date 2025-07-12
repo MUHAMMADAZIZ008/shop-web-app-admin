@@ -1,8 +1,14 @@
+@import "tailwindcss";
+
 button {
     cursor: "pointer",
 }
 
+/* index.css yoki App.css */
 .telegram-webapp {
     max-width: 500px;
     margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
